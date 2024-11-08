@@ -6,12 +6,22 @@
 
 import pyodbc
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from typing import List, Optional
 from datetime import datetime
 
 # Configuração da API FastAPI
 app = FastAPI()
+
+#Corrigir alguns erros de CORS:
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"], # * para liberar todos os IPs, ou informe um IP especifico no lugar de *, ou você pode colocar mais do que só 1 IP
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 # Função para estabelecer a conexão com o SQL Server
 def get_db_connection():
