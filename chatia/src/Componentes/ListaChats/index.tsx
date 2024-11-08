@@ -2,8 +2,9 @@ import './ListaChats.css';
 import React from 'react';
 import { ListaChatsProps, ChatInterface } from  "../../Interfaces/index.ts";
 
-export default function ListaChats({ chats }: ListaChatsProps) {
+const ListaChats: React.FC<ListaChatsProps> = ({chats, setSelectedChat }) => {
     const OpenChat = (chats: ChatInterface) => {
+        setSelectedChat(chats);
         console.log(chats);
     }
 
@@ -16,4 +17,7 @@ export default function ListaChats({ chats }: ListaChatsProps) {
             ))}
         </div>
     );
-}
+};
+
+
+export default ListaChats;
