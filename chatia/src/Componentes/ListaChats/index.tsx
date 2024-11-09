@@ -2,7 +2,7 @@ import './ListaChats.css';
 import React from 'react';
 import { ListaChatsProps, ChatInterface } from  "../../Interfaces/index.ts";
 
-const ListaChats: React.FC<ListaChatsProps> = ({chats, setSelectedChat }) => {
+const ListaChats: React.FC<ListaChatsProps> = ({chats, setSelectedChat, user }) => {
     const OpenChat = (chats: ChatInterface) => {
         setSelectedChat(chats);
         console.log(chats);

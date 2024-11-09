@@ -25,4 +25,20 @@ export type GetChat = ChatInterface[]; // Tipo para representar uma lista de cha
 export interface ListaChatsProps {
     chats: GetChat;
     setSelectedChat: React.Dispatch<React.SetStateAction<ChatInterface | null>>; // Recebe a função para alterar o chat selecionado
+    user: string | null;
   }
+
+export interface Mensagem {
+    chat: ChatInterface;
+    user: string | null;
+}
+
+export interface GetMensagem {
+    id: number;
+    chat_id: number;
+    sender: string;
+    message: string;
+    date: string;
+}
+
+export type GetMensagens = GetMensagem[]
