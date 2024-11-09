@@ -13,11 +13,11 @@ export default function Chat(){
     const [selectedChat, setSelectedChat] = useState<ChatInterface | null>(null); // Estado para armazenar o chat selecionado
 
     //Executar quando selecionar um chat
-    useEffect(() => {
-        if(selectedChat){
-            console.log(selectedChat);
-        }
-    }, [selectedChat]);
+    // useEffect(() => {
+    //     if(selectedChat){
+    //         console.log(selectedChat);
+    //     }
+    // }, [selectedChat]);
 
     useEffect(() => {
         setUser("E215EDB2-5E0D-4F22-9AB9-12131567890A");

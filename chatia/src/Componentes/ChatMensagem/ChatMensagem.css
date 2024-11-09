@@ -2,7 +2,7 @@
     background-color: rgb(75, 75, 75);
     flex: 1;
     height: 100vh;
-    overflow: hidden;
+    /* overflow: hidden; */
 
     display: flex;
     flex-direction: column;
@@ -52,12 +52,37 @@
         }
     }
 
+    & .scrollable-div {
+        scrollbar-width: thin; /* Para Firefox */
+        scrollbar-color: #888 #ffffff00; /* Para Firefox */
+    }
+
+    /* Para navegadores baseados em WebKit (Chrome, Safari, Edge) */
+    ::-webkit-scrollbar {
+        width: 10px; /* Largura da barra de rolagem */
+    }
+
+    ::-webkit-scrollbar-track {
+        background: #ffffff00; /* Cor do fundo da barra de rolagem */
+    }
+
+    ::-webkit-scrollbar-thumb {
+        background: #888; /* Cor do botão da barra de rolagem */
+        border-radius: 10px; /* Bordas arredondadas do botão */
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+        background: #202020; /* Cor do botão ao passar o mouse */
+    }
 
     & .Mensagem{
         padding: 30px 12% 0px 12%;
         flex: 1;
         display: flex;
         flex-direction: column;
+        overflow: auto;
+        margin-right: 3px;
+        
 
         & .MensagemUser,
         & .MensagemBot {

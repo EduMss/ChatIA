@@ -5,7 +5,7 @@ import { ListaChatsProps, ChatInterface } from  "../../Interfaces/index.ts";
 const ListaChats: React.FC<ListaChatsProps> = ({chats, setSelectedChat, user }) => {
     const OpenChat = (chats: ChatInterface) => {
         setSelectedChat(chats);
-        console.log(chats);
+        //console.log(chats);
     }
 
     return (
