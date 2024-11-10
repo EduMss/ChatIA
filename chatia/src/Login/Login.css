@@ -1,0 +1,80 @@
+.Login{
+    background-color: rgb(75, 75, 75);
+    flex: 1;
+    height: 100vh;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+    & .LoginArea{
+        display: flex;
+        flex-direction: column;
+        align-items: stretch;
+        justify-content: center;
+
+        width: 500px;
+        height: 400px;
+        background-color: rgba(107, 107, 107, 0.651);
+        border-radius: 14px;
+
+        & input {
+            background-color: rgba(245, 245, 245, 0.397);
+            font-family: "Ubuntu", sans-serif;
+            font-weight: 400;
+            font-style: normal;
+            font-size: larger;
+            border-radius: 12px;
+            
+            border: none;         /* Remove a borda */
+            outline: none;        /* Remove o contorno ao focar no input */
+            padding: 8px 12px;  /* Adiciona espaçamento ao redor do texto */
+        }
+
+        & label {
+            font-family: "Ubuntu", sans-serif;
+            font-weight: 400;
+            font-style: normal;
+            font-size: larger;
+        }
+
+        & button {
+            font-family: "Ubuntu", sans-serif;
+            font-weight: 400;
+            font-style: normal;
+            font-size: larger;
+        }
+
+        & .DivUsername{
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+            margin: 5px 25px;
+            align-items: center;
+        }
+
+        & .DivPassword{
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+            margin: 5px 25px;
+            align-items: center;
+        }
+
+        & .AreaSenhaView {
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+
+            & .ViewPassword {
+                position: absolute;
+                cursor: pointer;
+                right: 5%;
+                top: 20%;
+            }
+        }
+    }
+
+}
