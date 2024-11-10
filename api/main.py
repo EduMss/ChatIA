@@ -15,7 +15,7 @@ from typing import List
 import ollama
 
 # Minhas Funções
-from api.Authenticator.HASH import GerarHASH, VerificarSenhaHASH, hash_password
+from api.Authenticator.HASH import GerarHASH
 from api.Authenticator.TokenBearer import create_access_token,verify_password, verify_token
 from api.Connections.ConnectionDB import get_db_connection, get_db_connection_Login
 from api.Models.ClassesModel import Login, Chat, GetChat, Message, PostMessage, Singup
