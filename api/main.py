@@ -2,21 +2,17 @@
 # pip install fastapi uvicorn pyodbc
 # pip install ollama
 # start api:
-# uvicorn main:app --reload
+# uvicorn main:app --reload || uvicorn api.main:app --reload
 
 # pip install bcrypt
-
 # pip install pyjwt 
 # pip install python-multipart
 
 from fastapi import FastAPI, Depends, HTTPException, status
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
-
+from fastapi.security import OAuth2PasswordRequestForm
 from typing import List
 import ollama
-from datetime import datetime, timedelta
-import jwt
 
 # Minhas Funções
 from api.Authenticator.HASH import GerarHASH, VerificarSenhaHASH, hash_password
