@@ -6,14 +6,24 @@
 
 # pip install bcrypt
 
-import pyodbc
-from fastapi import FastAPI, HTTPException
+# pip install pyjwt 
+# pip install python-multipart
+
+from fastapi import FastAPI, Depends, HTTPException, status
 from fastapi.middleware.cors import CORSMiddleware
-from pydantic import BaseModel
-from typing import List, Optional
-from datetime import datetime
+from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
+
+from typing import List
 import ollama
-import bcrypt
+from datetime import datetime, timedelta
+import jwt
+
+# Minhas Funções
+from api.Authenticator.HASH import GerarHASH, VerificarSenhaHASH, hash_password
+from api.Authenticator.TokenBearer import create_access_token,verify_password, verify_token
+from api.Connections.ConnectionDB import get_db_connection, get_db_connection_Login
+from api.Models.ClassesModel import Login, Chat, GetChat, Message, PostMessage, Singup
+
 
 # Configuração da API FastAPI
 app = FastAPI()
@@ -27,82 +37,6 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-def GerarHASH(senha: str):
-    if senha:
-        # Gerar um salt
-        salt = bcrypt.gensalt()
-        senha_hash = bcrypt.hashpw(senha.encode('utf-8'), salt)
-        return senha_hash
-
-    return None
-
-def VerificarSenhaHASH(senha, hash):
-    return bcrypt.checkpw(senha.encode('utf-8'), hash)
-
-# Função para estabelecer a conexão com o SQL Server
-def get_db_connection():
-    conn = pyodbc.connect(
-        'DRIVER={ODBC Driver 17 for SQL Server};'
-        'SERVER=192.168.0.192;'  # Substitua pelo endereço do seu servidor
-        'DATABASE=ChatIA;'  # Substitua pelo nome do seu banco de dados
-        'UID=ia;'  # Substitua pelo nome de usuário
-        'PWD=M@theus.54'  # Substitua pela senha
-    )
-    return conn
-
-# Função para estabelecer a conexão com o SQL Server
-def get_db_connection_Login():
-    conn = pyodbc.connect(
-        'DRIVER={ODBC Driver 17 for SQL Server};'
-        'SERVER=192.168.0.192;'  # Substitua pelo endereço do seu servidor
-        'DATABASE=Login;'  # Substitua pelo nome do seu banco de dados
-        'UID=ia;'  # Substitua pelo nome de usuário
-        'PWD=M@theus.54'  # Substitua pela senha
-    )
-    return conn
-
-#Criando um Type para facilitar na hora de receber a resposta na requisição,
-class TextRequest(BaseModel):
-    text: str
-
-# Modelos de dados com Pydantic
-class Chat(BaseModel):
-    user_1_id: str
-    user_2_id: Optional[str] = None
-    start_date: datetime
-    end_date: Optional[datetime] = None
-    status: str
-
-    class Config:
-        orm_mode = True
-
-class GetChat(BaseModel):
-    id: int
-    user_1_id: str
-    user_2_id: Optional[str] = None
-    start_date: datetime
-    end_date: Optional[datetime] = None
-    status: str
-
-class Message(BaseModel):
-    id: int
-    chat_id: int
-    sender: str
-    message: str
-    date: datetime
-
-class PostMessage(BaseModel):
-    sender: str
-    message: str
-    date: datetime
-
-class Singup(BaseModel):
-    userName: str
-    password: str
-
-class Login(BaseModel):
-    Id: str
-    UserName: str
 
 # Rota para listar todos os chats
 @app.get("/chats/", response_model=List[GetChat])
@@ -196,6 +130,7 @@ def create_user(user: Singup):
     cursor = conn.cursor()
     
     hashSenha = GerarHASH(user.password)
+    # hashSenha = hash_password(user.password)
 
     try: 
         # Verifica se o usuário já existe
@@ -223,10 +158,56 @@ def create_user(user: Singup):
         userid = cursor.fetchone()[0]
         conn.commit()
         conn.close()
-        
+
         return {"Id": userid, "UserName": user.userName}
 
     except Exception as e:
         conn.close()
         raise HTTPException(status_code=500, detail=str(e))
     
+
+# Rota de login
+@app.post("/login")
+async def login(form_data: OAuth2PasswordRequestForm = Depends()):
+    conn = get_db_connection_Login()
+    cursor = conn.cursor()
+
+    try: 
+        cursor.execute("SELECT * FROM Users WHERE UserName = ?", (form_data.username,))
+        user = cursor.fetchone()
+        conn.commit()
+        conn.close()
+
+        # Verifica se o usuário foi encontrado
+        if not user:
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED,
+                detail="Credenciais inválidas",
+                headers={"WWW-Authenticate": "Bearer"},
+            )
+
+        # Acessa o valor da senha hashed (ajuste o índice conforme a estrutura real da sua tabela)
+        hashed_password = user[2]  # Supondo que a senha está na terceira coluna
+
+        isValid = verify_password(form_data.password, hashed_password)
+
+        if not isValid:
+            return HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED,
+                detail="Credenciais inválidas",
+                headers={"WWW-Authenticate": "Bearer"},
+            )
+            # raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED)
+    
+        # Cria o token de acesso
+        access_token = create_access_token(data={"sub": form_data.username, "userID": user[0]})
+        return {"access_token": access_token, "token_type": "bearer"}
+        
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+# Rota protegida
+@app.get("/protected")
+async def protected_route(user: Login = Depends(verify_token)):
+    return {"message": f"Bem-vindo, {user.UserName}, seu ID é {user.userID}!"}
