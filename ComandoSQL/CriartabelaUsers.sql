@@ -5,9 +5,11 @@ USE Login;
 CREATE TABLE Users (
     Id uniqueidentifier DEFAULT NEWID() PRIMARY KEY,
     UserName NVARCHAR(100) UNIQUE NOT NULL,
-    Password NVARCHAR(100) NOT NULL
+    Password VARBINARY(100) NOT NULL
 );
 
+
+SELECT HASHBYTES('MD5', 'NO COLLUSION');
 
 DROP TABLE Users;
 
