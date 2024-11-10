@@ -4,7 +4,7 @@
 # start api:
 # uvicorn main:app --reload
 
-
+# pip install bcrypt
 
 import pyodbc
 from fastapi import FastAPI, HTTPException
@@ -13,6 +13,7 @@ from pydantic import BaseModel
 from typing import List, Optional
 from datetime import datetime
 import ollama
+import bcrypt
 
 # Configuração da API FastAPI
 app = FastAPI()
@@ -26,9 +27,17 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-#Criando um Type para facilitar na hora de receber a resposta na requisição,
-class TextRequest(BaseModel):
-    text: str
+def GerarHASH(senha: str):
+    if senha:
+        # Gerar um salt
+        salt = bcrypt.gensalt()
+        senha_hash = bcrypt.hashpw(senha.encode('utf-8'), salt)
+        return senha_hash
+
+    return None
+
+def VerificarSenhaHASH(senha, hash):
+    return bcrypt.checkpw(senha.encode('utf-8'), hash)
 
 # Função para estabelecer a conexão com o SQL Server
 def get_db_connection():
@@ -40,6 +49,21 @@ def get_db_connection():
         'PWD=M@theus.54'  # Substitua pela senha
     )
     return conn
+
+# Função para estabelecer a conexão com o SQL Server
+def get_db_connection_Login():
+    conn = pyodbc.connect(
+        'DRIVER={ODBC Driver 17 for SQL Server};'
+        'SERVER=192.168.0.192;'  # Substitua pelo endereço do seu servidor
+        'DATABASE=Login;'  # Substitua pelo nome do seu banco de dados
+        'UID=ia;'  # Substitua pelo nome de usuário
+        'PWD=M@theus.54'  # Substitua pela senha
+    )
+    return conn
+
+#Criando um Type para facilitar na hora de receber a resposta na requisição,
+class TextRequest(BaseModel):
+    text: str
 
 # Modelos de dados com Pydantic
 class Chat(BaseModel):
@@ -71,6 +95,14 @@ class PostMessage(BaseModel):
     sender: str
     message: str
     date: datetime
+
+class Singup(BaseModel):
+    userName: str
+    password: str
+
+class Login(BaseModel):
+    Id: str
+    UserName: str
 
 # Rota para listar todos os chats
 @app.get("/chats/", response_model=List[GetChat])
@@ -127,6 +159,7 @@ def create_message(chat_id: int, message: PostMessage):
         )
         conn.commit()
     except Exception as e:
+        conn.close()
         raise HTTPException(status_code=500, detail=str(e))
     
     conn.close()
@@ -155,3 +188,45 @@ def create_chat(chat: Chat):
     # Retornar o objeto Chat com o id gerado
     return {**chat.model_dump(), "id": new_chat_id}
     # return {**chat.dict(), "id": new_chat_id}
+
+
+@app.post("/singup/", response_model=Login)
+def create_user(user: Singup):
+    conn = get_db_connection_Login()
+    cursor = conn.cursor()
+    
+    hashSenha = GerarHASH(user.password)
+
+    try: 
+        # Verifica se o usuário já existe
+        cursor.execute("SELECT COUNT(1) FROM Users WHERE UserName = ?", (user.userName))
+        exists = cursor.fetchone()[0]
+
+        if exists:
+            # Se o usuário já existir, levanta uma exceção com uma mensagem personalizada
+            raise HTTPException(status_code=400, detail="Usuário já existe.")
+
+
+        # Verificando se o usuario existe, se não existir ele cria a conta
+        cursor.execute(
+            """
+            IF NOT EXISTS (SELECT 1 FROM Users WHERE UserName = ?)
+            BEGIN
+                INSERT INTO Users (UserName, Password)
+                OUTPUT INSERTED.Id
+                VALUES (?, ?)
+            END
+            """,
+            (user.userName, user.userName, hashSenha)
+        )
+
+        userid = cursor.fetchone()[0]
+        conn.commit()
+        conn.close()
+        
+        return {"Id": userid, "UserName": user.userName}
+
+    except Exception as e:
+        conn.close()
+        raise HTTPException(status_code=500, detail=str(e))
+    
