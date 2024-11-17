@@ -9,13 +9,15 @@ import Loading from './Componentes/Loading/index.tsx';
 import Chat from './Componentes/SemLogin/Chat/index.tsx';
 
 function App() {
-  const [Bearer_token, setBearer_token] = useState(Cookies.get('BEARER_TOKEN'));
+  // const [Bearer_token, setBearer_token] = useState(Cookies.get('BEARER_TOKEN'));
+  const Bearer_token = Cookies.get('BEARER_TOKEN');
   const [isLogin, setIsLogin] = useState(true);
   const [isLoading, setIsLoading] = useState(true);
 
 
   //Obtendo informações do cliente
   useEffect(() => {
+    // setIsLogin(true);
     const VerificarLogin = async () => {
       let result;
       if (Bearer_token !== ""){
@@ -45,11 +47,8 @@ function App() {
     <div className="AppLayout">
       <div className="Content">
         <Routes>
-          {/* <Route path="/" element={<Chat />} /> */}
-          {/* {VerificarLogin() ? <Route path="/" element={<Chat />} /> : <Route path="/" element={<Login />} />} */}
           
           <Route path="/" element={isLoading ? <Loading /> : isLogin ? <ChatLogin /> : <Chat /> } />
-          {/* <Route path="/" element={<Chat /> } /> */}
           <Route path="/chat" element={<Chat/>} />
           <Route path="/login" element={<Login/>} />
         </Routes>

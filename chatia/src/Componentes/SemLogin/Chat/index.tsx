@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from "react";
+import React from "react";
 import './Chat.css';
 import ChatMensagem from "../ChatMensagem/index.tsx";
 import ListaChats from "../../../Componentes/SemLogin/ListaChats/index.tsx";

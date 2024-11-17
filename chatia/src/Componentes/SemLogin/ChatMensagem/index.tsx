@@ -1,6 +1,6 @@
 import './ChatMensagem.css';
 import React, { useEffect, useState, useRef } from 'react';
-import { MensagemLogout, GetMensagensTemp, GetMensagemTemp } from '../../../Interfaces';
+import { GetMensagensTemp, GetMensagemTemp } from '../../../Interfaces';
 import axios from 'axios';
 
 const ChatMensagem: React.FC = () => {
@@ -12,9 +12,9 @@ const ChatMensagem: React.FC = () => {
         return savedChat ? JSON.parse(savedChat) : []; // Parseia a string JSON
     });
 
-    const isWebKit = () => {
-        return /AppleWebKit/i.test(navigator.userAgent);
-    };
+    // const isWebKit = () => {
+    //     return /AppleWebKit/i.test(navigator.userAgent);
+    // };
 
     // Atualizar o localStorage sempre que o selectedChat mudar
     useEffect(() => {

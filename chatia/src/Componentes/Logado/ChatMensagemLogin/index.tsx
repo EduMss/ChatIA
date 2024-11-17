@@ -8,9 +8,9 @@ const ChatMensagemLogin: React.FC<Mensagem> = ({user, chat}) => {
     let [novaMensagem, setNovaMensagem] = useState<string>("");
     const mensagemRef = useRef<HTMLDivElement | null>(null); // Array de refs
 
-    const isWebKit = () => {
-        return /AppleWebKit/i.test(navigator.userAgent);
-    };
+    // const isWebKit = () => {
+    //     return /AppleWebKit/i.test(navigator.userAgent);
+    // };
 
     const getMensagens = async ():Promise<void> => {
         try {
