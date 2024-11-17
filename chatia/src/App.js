@@ -23,7 +23,7 @@ function App() {
             result = await axios.get(`http://127.0.0.1:8000/protected`,{
                 headers: {'Authorization': `Bearer ${Bearer_token}`}
             })
-            return result.status === 200 ? setIsLogin(false) : setIsLogin(true);
+            return result.status === 200 ? setIsLogin(true) : setIsLogin(false);
         } catch (error) {
             console.error("Error ao buscar chats:", error);
         }

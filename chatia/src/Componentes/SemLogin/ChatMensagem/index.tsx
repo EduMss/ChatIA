@@ -94,6 +94,26 @@ const ChatMensagem: React.FC = () => {
                         <label>{mensagem.message}</label>
                     </div>
                 ))}
+                {mensagens.length <= 0 ? <div style={{
+                    flex: 1, 
+                    height: '100vh', 
+                    backgroundColor: 'rgb(75, 75, 75)', 
+                    display: 'flex', 
+                    justifyContent: 'center', 
+                    alignItems: 'center'
+                }}>
+                    <h1 style={{
+                        color: 'whitesmoke',
+                    }}>
+                        Olá, você esta em um chat temporario, ao fechar ou recarregar essa pagina você perdera as conversas! 
+                            <br />
+                            <br />
+                        Faça login para salvar as conversas
+                    </h1>
+                </div> 
+                    :
+                <></>
+                }
                 <div ref={mensagemRef}></div>
             </div>
             <div className='InputMensagem'>
