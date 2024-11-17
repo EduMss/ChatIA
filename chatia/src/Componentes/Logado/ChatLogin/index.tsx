@@ -2,7 +2,6 @@ import React, {useEffect, useState} from "react";
 import axios from "axios";
 import './ChatLogin.css';
 import { GetChat, ChatInterface } from  "../../../Interfaces/index.ts";
-import Cookies from 'js-cookie';
 import ListaChatsLogin from "../ListaChatsLogin/index.tsx";
 import ChatMensagemLogin from "../ChatMensagemLogin/index.tsx";
 

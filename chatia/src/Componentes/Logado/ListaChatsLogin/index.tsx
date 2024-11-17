@@ -8,7 +8,6 @@ const ListaChatsLogin: React.FC<ListaChatsProps> = ({chats, setSelectedChat, use
     const navigate = useNavigate();
     const OpenChat = (chats: ChatInterface) => {
         setSelectedChat(chats);
-        //console.log(chats);
     }
 
     const Logout = () => {

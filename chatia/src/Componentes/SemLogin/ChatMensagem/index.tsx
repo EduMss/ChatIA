@@ -4,7 +4,6 @@ import { MensagemLogout, GetMensagensTemp, GetMensagemTemp } from '../../../Inte
 import axios from 'axios';
 
 const ChatMensagem: React.FC = () => {
-    // let [mensagens, setMensagens] = useState<GetMensagens>([]);
     let [novaMensagem, setNovaMensagem] = useState<string>("");
     const mensagemRef = useRef<HTMLDivElement | null>(null); // Array de refs
 
@@ -26,7 +25,7 @@ const ChatMensagem: React.FC = () => {
         }
     }, [mensagens]);
 
-    const getMensagens = async ():Promise<void> => {
+    const EnviarAPIMensagem = async ():Promise<void> => {
         const nova: GetMensagemTemp = {sender: "user", message: novaMensagem}
         setMensagens((mensagens)=> [...mensagens, nova]); // Atualiza o estado com os dados da resposta
 
@@ -46,20 +45,6 @@ const ChatMensagem: React.FC = () => {
         }
     };
 
-    // const postMensagem = async ():Promise<void> => {
-    //     try {
-    //         const result = await axios.post(`http://127.0.0.1:8000/chats/${chat.id}/messages`, {
-    //             sender: "user",
-    //             message: novaMensagem,
-    //             date: "2024-11-07T14:32:00"
-    //     })
-    //         //setMensagens(result.data); // Atualiza o estado com os dados da resposta
-    //         //console.log(result.data);
-    //     } catch (error) {
-    //         console.error("Error ao buscar chats:", error);
-    //     }
-    // };
-
     const scrollToBottom = () => {
         // Verifica se a referência da última mensagem foi definida
         if (mensagemRef.current) {
@@ -68,16 +53,12 @@ const ChatMensagem: React.FC = () => {
         }
     }
 
-    // useEffect(() => {
-    //     getMensagens();// Chama a função ao montar o componente
-    // }, [chat]);
-
     useEffect(()=>{
         scrollToBottom();
     }, [mensagens])
 
     const EnviarMensagem = async () => {
-        await getMensagens();
+        await EnviarAPIMensagem();
         setNovaMensagem("");
     };
 
