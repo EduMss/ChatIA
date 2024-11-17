@@ -2,6 +2,7 @@ import './ChatMensagemLogin.css';
 import React, { useEffect, useState, useRef } from 'react';
 import { Mensagem, GetMensagens } from '../../../Interfaces';
 import axios from 'axios';
+import Cookies from 'js-cookie';
 
 const ChatMensagemLogin: React.FC<Mensagem> = ({user, chat}) => {
     let [mensagens, setMensagens] = useState<GetMensagens>([]);
@@ -13,8 +14,11 @@ const ChatMensagemLogin: React.FC<Mensagem> = ({user, chat}) => {
     // };
 
     const getMensagens = async ():Promise<void> => {
+        const Bearer_token = Cookies.get('BEARER_TOKEN');
         try {
-            const result = await axios.get(`http://127.0.0.1:8000/chats/${chat.id}/messages`)
+            const result = await axios.get(`http://127.0.0.1:8000/chats/${chat.id}/messages`, {
+                headers: {'Authorization': `Bearer ${Bearer_token}`}
+            })
             setMensagens(result.data); // Atualiza o estado com os dados da resposta
             //console.log(result.data);
         } catch (error) {
@@ -23,11 +27,14 @@ const ChatMensagemLogin: React.FC<Mensagem> = ({user, chat}) => {
     };
 
     const postMensagem = async ():Promise<void> => {
+        const Bearer_token = Cookies.get('BEARER_TOKEN');
         try {
             const result = await axios.post(`http://127.0.0.1:8000/chats/${chat.id}/messages`, {
                 sender: "user",
                 message: novaMensagem,
                 date: "2024-11-07T14:32:00"
+        }, {
+            headers: {'Authorization': `Bearer ${Bearer_token}`}
         })
             //setMensagens(result.data); // Atualiza o estado com os dados da resposta
             //console.log(result.data);

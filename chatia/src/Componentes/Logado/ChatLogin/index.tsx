@@ -4,7 +4,7 @@ import './ChatLogin.css';
 import { GetChat, ChatInterface } from  "../../../Interfaces/index.ts";
 import ListaChatsLogin from "../ListaChatsLogin/index.tsx";
 import ChatMensagemLogin from "../ChatMensagemLogin/index.tsx";
-
+import Cookies from 'js-cookie';
 
 
 export default function ChatLogin(){
@@ -24,8 +24,11 @@ export default function ChatLogin(){
     useEffect(() => {
         setUser("E215EDB2-5E0D-4F22-9AB9-12131567890A");
         const getChats = async ():Promise<void> => {
+            const Bearer_token = Cookies.get('BEARER_TOKEN');
             try {
-                const result = await axios.get("http://127.0.0.1:8000/chats")
+                const result = await axios.get("http://127.0.0.1:8000/chats", {
+                    headers: {'Authorization': `Bearer ${Bearer_token}`}
+                })
                 setChats(result.data); // Atualiza o estado com os dados da resposta
             } catch (error) {
                 console.error("Error ao buscar chats:", error);
@@ -36,7 +39,7 @@ export default function ChatLogin(){
 
     return( // ChatMensagemLogin
         <div className="Chat">
-            <ListaChatsLogin chats={chats} setSelectedChat={setSelectedChat} user={user} /> 
+            <ListaChatsLogin chats={chats} setSelectedChat={setSelectedChat} setChats={setChats} user={user} /> 
             {selectedChat ? 
                 <ChatMensagemLogin user={user} chat={selectedChat}/> 
                     :

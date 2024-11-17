@@ -36,7 +36,7 @@ app.add_middleware(
 
 # Rota para listar todos os chats
 @app.get("/chats/", response_model=List[GetChat])
-def get_chats():
+def get_chats(user: Login = Depends(verify_token)):
     conn = get_db_connection()
     cursor = conn.cursor()
     cursor.execute("SELECT * FROM chats")
@@ -48,7 +48,7 @@ def get_chats():
 
 # Rota para listar todas as mensagens de um chat específico
 @app.get("/chats/{chat_id}/messages", response_model=List[Message])
-def get_messages(chat_id: int):
+def get_messages(chat_id: int, user: Login = Depends(verify_token)):
     conn = get_db_connection()
     cursor = conn.cursor()
     cursor.execute("SELECT * FROM messages WHERE chat_id = ?", (chat_id,))
@@ -59,7 +59,7 @@ def get_messages(chat_id: int):
 
 # Rota para criar uma nova mensagem
 @app.post("/chats/{chat_id}/messages", response_model=PostMessage)
-def create_message(chat_id: int, message: PostMessage):
+def create_message(chat_id: int, message: PostMessage, user: Login = Depends(verify_token)):
     if not message.message:
         raise HTTPException(status_code=400,detail="Não enviou nenhuma pergunta!")
 
@@ -123,7 +123,7 @@ def create_message(message: PostMessageTemp):
 
 # Rota para criar um novo chat
 @app.post("/chats/", response_model=GetChat)
-def create_chat(chat: Chat):
+def create_chat(chat: Chat, user: Login = Depends(verify_token)):
     conn = get_db_connection()
     cursor = conn.cursor()
     
