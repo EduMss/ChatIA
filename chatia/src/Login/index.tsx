@@ -90,6 +90,10 @@ const Login = () => {
                     value={username}
                     placeholder='Usuário'
                     onChange={(e) => setUsername(e.target.value)}
+                    onKeyDown={(e) => {
+                        if (e.key === "Enter")
+                            isLogin ? Logar() : Registra();
+                        }}
                 />
             </div>
             <div className='DivPassword'>
@@ -101,6 +105,10 @@ const Login = () => {
                         value={password}
                         placeholder='Senha'
                         onChange={(e) => setPassword(e.target.value)}
+                        onKeyDown={(e) => {
+                            if (e.key === "Enter")
+                                isLogin ? Logar() : Registra();
+                            }}
                     />
                     <div className='ViewPassword' onClick={() => setViewPw(false)} onMouseDown={() => setViewPw(true)}>
                     {viewPw ? 

@@ -65,6 +65,16 @@ const ChatMensagemLogin: React.FC<Mensagem> = ({user, chat}) => {
         setNovaMensagem("");
     };
 
+    // const EnviarMensagemENTER = (event) => {
+    //     if (event.key === 'Enter'){
+    //         console.log("Enviar mensagem com o ENTER");
+    //     }
+    // }
+
+    // const handlerFuntion = () => {
+    //     console.log("Enviar dadadada mensagem com o ENTER");
+    // }
+
     return (
         <div className='ChatMensagem'>
             <div className={`Mensagem {isWebKit() ? '' : 'scrollable-div'}`}>
@@ -86,8 +96,12 @@ const ChatMensagemLogin: React.FC<Mensagem> = ({user, chat}) => {
                     placeholder="Mensagem para a IA"
                     value={novaMensagem}
                     onChange={(e) => setNovaMensagem(e.target.value)}
+                    onKeyDown={(e) => {
+                        if (e.key === "Enter")
+                            EnviarMensagem();
+                        }}
                 />
-                <div className='ButtonSend' onClick={EnviarMensagem}>
+                <div className='ButtonSend' onClick={EnviarMensagem} >
                     {/* Tem que colocar a tag <link> no public/index.html */}
                     <span className="material-symbols-outlined" style={{fontSize: '36px', color: 'whitesmoke'}}>send</span>
                 </div>

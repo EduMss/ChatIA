@@ -8,7 +8,9 @@ from api.Models.ClassesModel import Login
 # Configurações
 SECRET_KEY = "seu_segredo_seguro"
 ALGORITHM = "HS256"
-ACCESS_TOKEN_EXPIRE_MINUTES = 30
+# ACCESS_TOKEN_EXPIRE_MINUTES = 30 # 30 minutos
+ACCESS_TOKEN_EXPIRE_MINUTES = 7 * 24 * 60  # 7 dias em minutos (dias * hora * minutos)
+
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="login")
 
 # Função para verificar o token
