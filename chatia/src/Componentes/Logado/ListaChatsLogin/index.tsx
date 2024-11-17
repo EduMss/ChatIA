@@ -34,7 +34,7 @@ const ListaChatsLogin: React.FC<ListaChatsProps> = ({chats, setSelectedChat,setC
                 headers: {'Authorization': `Bearer ${Bearer_token}`}
             })
             //setMensagens(result.data); // Atualiza o estado com os dados da resposta
-            console.log(result.data);
+            // console.log(result.data);
             
             // definindo no chats para ele conseguir atualizar a lista
             setChats((chats) => [...chats, result.data])

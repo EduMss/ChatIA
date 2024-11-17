@@ -103,6 +103,10 @@ const ChatMensagem: React.FC = () => {
                     placeholder="Mensagem para a IA"
                     value={novaMensagem}
                     onChange={(e) => setNovaMensagem(e.target.value)}
+                    onKeyDown={(e) => {
+                        if (e.key === "Enter")
+                            EnviarMensagem();
+                        }}
                 />
                 <div className='ButtonSend' onClick={EnviarMensagem}>
                     {/* Tem que colocar a tag <link> no public/index.html */}
