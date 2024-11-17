@@ -26,11 +26,20 @@ export interface ListaChatsProps {
     chats: GetChat;
     setSelectedChat: React.Dispatch<React.SetStateAction<ChatInterface | null>>; // Recebe a função para alterar o chat selecionado
     user: string | null;
-  }
+}
+
+export interface ListaChatsPropsLogout {
+    chats: GetChat;
+    setSelectedChat: React.Dispatch<React.SetStateAction<ChatInterface | null>>; // Recebe a função para alterar o chat selecionado
+}
 
 export interface Mensagem {
     chat: ChatInterface;
     user: string | null;
+}
+
+export interface MensagemLogout {
+    chat: ChatInterface;
 }
 
 export interface GetMensagem {
@@ -40,5 +49,10 @@ export interface GetMensagem {
     message: string;
     date: string;
 }
-
 export type GetMensagens = GetMensagem[]
+
+export interface GetMensagemTemp {
+    sender: string;
+    message: string;
+}
+export type GetMensagensTemp = GetMensagemTemp[]

@@ -37,6 +37,9 @@ class PostMessage(BaseModel):
     message: str
     date: datetime
 
+class PostMessageTemp(BaseModel):
+    message: str
+
 class Singup(BaseModel):
     userName: str
     password: str

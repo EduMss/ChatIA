@@ -1,0 +1,112 @@
+.ChatMensagem {
+    background-color: rgb(75, 75, 75);
+    flex: 1;
+    height: 100vh;
+    /* overflow: hidden; */
+
+    display: flex;
+    flex-direction: column;
+    /* overflow: hidden; */
+
+    & .InputMensagem {
+        width: 100%;
+        height: 70px;
+
+        display: flex;
+        justify-content: center;
+        align-items: center;
+
+        position: relative;
+        overflow: hidden;
+
+        & input[type="text"] {
+            height: 40px;
+            width: 60%;
+            margin-bottom: 10px;
+
+            border-radius: 16px;
+            border: none;         /* Remove a borda */
+            outline: none;        /* Remove o contorno ao focar no input */
+            padding: 8px 12px;  /* Adiciona espaçamento ao redor do texto */
+
+            background-color: rgb(117, 117, 117);
+            font-size: 24px;
+
+            color: whitesmoke;
+        }
+
+        /* Estilização para o placeholder */
+        & input[type="text"]::placeholder {
+            color: #aaa; /* Altere para a cor desejada */
+            opacity: 1;  /* Garante que o placeholder seja visível */
+        }
+
+        & .ButtonSend {
+            height: 50px;
+            width: 50px;
+            position: absolute;
+            /* transform: translateX(100%); */
+            /* top: 50%; */
+            right: 19%;
+            cursor: pointer;
+        }
+    }
+
+    & .scrollable-div {
+        scrollbar-width: thin; /* Para Firefox */
+        scrollbar-color: #888 #ffffff00; /* Para Firefox */
+    }
+
+    /* Para navegadores baseados em WebKit (Chrome, Safari, Edge) */
+    ::-webkit-scrollbar {
+        width: 10px; /* Largura da barra de rolagem */
+    }
+
+    ::-webkit-scrollbar-track {
+        background: #ffffff00; /* Cor do fundo da barra de rolagem */
+    }
+
+    ::-webkit-scrollbar-thumb {
+        background: #888; /* Cor do botão da barra de rolagem */
+        border-radius: 10px; /* Bordas arredondadas do botão */
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+        background: #202020; /* Cor do botão ao passar o mouse */
+    }
+
+    & .Mensagem{
+        padding: 30px 12% 0px 12%;
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        overflow: auto;
+        margin-right: 3px;
+        
+
+        & .MensagemUser,
+        & .MensagemBot {
+            max-width: 60%; /* Ajuste o valor conforme necessário */
+            margin: 5px 0;
+            background-color: rgb(66, 66, 66);
+            border-radius: 8px;
+            padding: 5px;
+        }
+
+        & .MensagemUser{
+            align-self: flex-end;
+            /* background-color: #d1e7dd; Exemplo de cor de fundo */
+            /* padding: 10px; */
+            /* border-radius: 10px; */
+            text-align: right;
+        }
+
+        & .MensagemBot {
+            align-self: flex-start;
+            /* background-color: #f8d7da; Exemplo de cor de fundo */
+            /* padding: 10px; */
+            /* border-radius: 10px; */
+            text-align: left;
+        }
+    }
+}

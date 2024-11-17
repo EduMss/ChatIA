@@ -1,16 +1,68 @@
 import React, {useEffect, useState} from "react";
 import axios from "axios";
 import './Chat.css';
-import { GetChat, ChatInterface } from  "../Interfaces/index.ts";
-import ListaChats from "../Componentes/ListaChats/index.tsx";
-import ChatMensagem from "../Componentes/ChatMensagem/index.tsx";
+import { GetChat, ChatInterface } from  "../../../Interfaces/index.ts";
+import ListaChats from "../../SemLogin/ListaChats/index.tsx";
+import ChatMensagem from "../../ChatMensagem/index.tsx";
+import Cookies from 'js-cookie';
+import ListaChatsLogin from "../../ListaChatsLogin/index.tsx";
+import Loading from "../../Loading/index.tsx";
+import ChatMensagemLogin from "../../ChatMensagemLogin/index.tsx";
+
+
 
 export default function Chat(){
     let [user, setUser] = useState<string | null>(null);
 
      // Atualiza o estado com os dados da resposta
-    let [chats, setChats] = useState<GetChat>([]);
+    // let [chats, setChats] = useState<GetChat>([]);
     const [selectedChat, setSelectedChat] = useState<ChatInterface | null>(null); // Estado para armazenar o chat selecionado
+
+    // Recuperar e inicializar o estado com localStorage
+    const [chats, setChats] = useState<GetChat>(() => {
+        const savedChat = localStorage.getItem('chats');
+        return savedChat ? JSON.parse(savedChat) : []; // Parseia a string JSON
+    });
+
+    // Atualizar o localStorage sempre que o selectedChat mudar
+    useEffect(() => {
+        if (chats) {
+        localStorage.setItem('chats', JSON.stringify(chats));
+        } else {
+        localStorage.removeItem('chats'); // Remove se for null
+        }
+    }, [chats]);
+
+    const [Bearer_token, setBearer_token] = useState(Cookies.get('BEARER_TOKEN'));
+    const [isLogin, setIsLogin] = useState(false);
+    const [isLoading, setIsLoading] = useState(true);
+  
+  
+    //Obtendo informações do cliente
+    useEffect(() => {
+      const VerificarLogin = async () => {
+        let result;
+        if (Bearer_token !== ""){
+          try {
+              result = await axios.get(`http://127.0.0.1:8000/protected`,{
+                  headers: {'Authorization': `Bearer ${Bearer_token}`}
+              })
+              return result.status === 200 ? setIsLogin(true) : setIsLogin(false);
+          } catch (error) {
+              console.error("Error ao buscar chats:", error);
+          }
+        }
+        setIsLogin(false);
+        setIsLoading(false);
+      }
+      
+      VerificarLogin(); // Chama a função assíncrona
+    }, []); // Dependências do useEffect
+  
+    // para parar o loading quando você fazer o login
+    useEffect(() => {
+      setIsLoading(false);
+    }, [Bearer_token])
 
     //Executar quando selecionar um chat
     // useEffect(() => {
@@ -36,10 +88,20 @@ export default function Chat(){
     // height: 100vh;
     // justify-content: center;
     // align-items: center;
-    return(
+    return( // ChatMensagemLogin
         <div className="Chat">
-            <ListaChats chats={chats} setSelectedChat={setSelectedChat} user={user}/>
-            {selectedChat ? (<ChatMensagem user={user} chat={selectedChat}/>) : 
+            {isLogin ? 
+                    <ListaChatsLogin chats={chats} setSelectedChat={setSelectedChat} user={user} /> 
+                        : 
+                    <ListaChats chats={chats} setSelectedChat={setSelectedChat} user={user} />
+            }
+            {/* <ListaChats chats={chats} setSelectedChat={setSelectedChat} user={user}/> */}
+            {selectedChat ? 
+                isLogin ? 
+                    (<ChatMensagemLogin user={user} chat={selectedChat}/> )
+                        : 
+                    (<ChatMensagem user={user} chat={selectedChat}/>)
+                : 
                 <div style={{
                     flex: 1, 
                     height: '100vh', 
@@ -50,7 +112,11 @@ export default function Chat(){
                 }}>
                     <h1 style={{
                         color: 'whitesmoke',
-                    }}>Olá, clique em algum chat para começar a conversar!</h1>
+                    }}>{isLogin ? 
+                        "Olá, clique em algum chat para começar a conversar!"
+                            :
+                        "Olá, você esta em um chat temporario, ao fechar essa pagina você perdera as conversas! Faça login para salvar as conversas"
+                    }</h1>
                 </div>
             }
             

@@ -3,8 +3,11 @@
     width: 150px;
     height: 100vh;
     overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
 
-    & .Div-Button{
+    & .Div-Button {
         border-radius: 8px;
         margin: 10px;
         background-color: rgb(117, 117, 117);

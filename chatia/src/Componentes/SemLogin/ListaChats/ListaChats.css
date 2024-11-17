@@ -1,0 +1,30 @@
+.ListaChats {
+    background-color: rgb(32, 32, 32);
+    width: 150px;
+    height: 100vh;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+
+    & .Div-Button {
+        border-radius: 8px;
+        margin: 10px;
+        background-color: rgb(117, 117, 117);
+
+        display: flex;
+        justify-items: center;
+        justify-content: center;
+
+        & label {
+            font-size: 24px;
+            font-family: cursive;
+            color: white;
+        }
+    }
+
+    & .Div-Button:hover{
+        background-color: rgb(99, 99, 99);
+        border: 2px solid white ;
+    }
+}

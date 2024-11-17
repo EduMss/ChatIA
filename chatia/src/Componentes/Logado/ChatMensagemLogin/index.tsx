@@ -1,9 +1,9 @@
-import './ChatMensagem.css';
+import './ChatMensagemLogin.css';
 import React, { useEffect, useState, useRef } from 'react';
-import { Mensagem, GetMensagens } from '../../Interfaces';
+import { Mensagem, GetMensagens } from '../../../Interfaces';
 import axios from 'axios';
 
-const ChatMenssagem: React.FC<Mensagem> = ({user, chat}) => {
+const ChatMensagemLogin: React.FC<Mensagem> = ({user, chat}) => {
     let [mensagens, setMensagens] = useState<GetMensagens>([]);
     let [novaMensagem, setNovaMensagem] = useState<string>("");
     const mensagemRef = useRef<HTMLDivElement | null>(null); // Array de refs
@@ -89,4 +89,4 @@ const ChatMenssagem: React.FC<Mensagem> = ({user, chat}) => {
     );
 };
 
-export default ChatMenssagem;
+export default ChatMensagemLogin;

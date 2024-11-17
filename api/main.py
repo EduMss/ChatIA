@@ -18,7 +18,7 @@ import ollama
 from api.Authenticator.HASH import GerarHASH
 from api.Authenticator.TokenBearer import create_access_token,verify_password, verify_token
 from api.Connections.ConnectionDB import get_db_connection, get_db_connection_Login
-from api.Models.ClassesModel import Login, Chat, GetChat, Message, PostMessage, Singup
+from api.Models.ClassesModel import Login, Chat, GetChat, Message, PostMessage, Singup, PostMessageTemp
 
 
 # Configuração da API FastAPI
@@ -95,6 +95,32 @@ def create_message(chat_id: int, message: PostMessage):
     conn.close()
     return message
 
+
+# Rota para mensagem temporarias (Não salva no banco)
+# @app.post("/chats/messages", response_model=PostMessageTemp)
+@app.post("/chats/messages")
+def create_message(message: PostMessageTemp):
+    if not message.message:
+        raise HTTPException(status_code=400,detail="Não enviou nenhuma pergunta!")
+    
+    try:
+        response = ollama.chat(model="tinyllama", messages=[
+            # tem varios tipos de role, ver para que serve cada um
+            # Poso enviar uma lista de mensagem, cada uma mensagem vai ser um objeto
+            # no lugar de content tem outras opções, estudar para ver oque cada uma faz, tem um "imagem"
+            {
+                "role":"user",
+                "content": message.message
+            }
+        ])
+        llm_res = response.get('message', {}).get('content','')
+        return llm_res
+    
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+    
+    
+
 # Rota para criar um novo chat
 @app.post("/chats/", response_model=GetChat)
 def create_chat(chat: Chat):
@@ -120,8 +146,10 @@ def create_chat(chat: Chat):
     # return {**chat.dict(), "id": new_chat_id}
 
 
-@app.post("/singup/", response_model=Login)
+# @app.post("/singup/", response_model=Login)
+@app.post("/register")
 def create_user(user: Singup):
+    # form_data: OAuth2PasswordRequestForm = Depends()
     conn = get_db_connection_Login()
     cursor = conn.cursor()
     
@@ -155,7 +183,10 @@ def create_user(user: Singup):
         conn.commit()
         conn.close()
 
-        return {"Id": userid, "UserName": user.userName}
+        # Cria o token de acesso
+        access_token = create_access_token(data={"sub": user.userName, "userID": userid})
+        return {"access_token": access_token, "token_type": "bearer"}
+        # return {"Id": userid, "UserName": user.userName}
 
     except Exception as e:
         conn.close()
@@ -203,7 +234,7 @@ async def login(form_data: OAuth2PasswordRequestForm = Depends()):
         raise HTTPException(status_code=500, detail=str(e))
 
 
-# Rota protegida
+# Rota protegida TESTE
 @app.get("/protected")
 async def protected_route(user: Login = Depends(verify_token)):
     return {"message": f"Bem-vindo, {user.UserName}, seu ID é {user.userID}!"}

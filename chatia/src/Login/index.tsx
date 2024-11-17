@@ -1,11 +1,18 @@
 import './Login.css';
 import React, {useState} from 'react';
+import axios from 'axios';
+import { useNavigate } from "react-router-dom";
+// npm install js-cookie
+import Cookies from 'js-cookie';
 
 const Login = () => {
     const [username, setUsername] = useState<string>("")
     const [password, setPassword] = useState<string>("")
     const [viewPw,setViewPw] = useState<boolean>(false)
     const [isLogin, setIsLogin] = useState<Boolean>(true)
+    // const [access_token, setAccess_token] = useState<string>("")
+
+    const navigate = useNavigate();
 
     const Registrar = () => {
         setIsLogin(false);
@@ -13,14 +20,55 @@ const Login = () => {
 
     const login = () => {
         setIsLogin(true);
-    }
+    };
+
+    const singin = async ():Promise<void> => {
+        try {
+            const result = await axios.post(`http://127.0.0.1:8000/login`, {
+                username: username,
+                password: password
+            },{
+                headers: {'Content-Type': 'application/x-www-form-urlencoded'}
+            })
+            //setMensagens(result.data); // Atualiza o estado com os dados da resposta
+            console.log(result.data.access_token);
+
+            // esse cookie tem 7 dias de tempo de vida;
+            // Cookies.set('nomeDoCookie', 'valorDoCookie', { expires: 7 });
+            Cookies.set('BEARER_TOKEN', result.data.access_token, { expires: 7 });
+            navigate("/");
+            window.location.reload();
+        } catch (error) {
+            console.error("Error ao buscar chats:", error);
+        }
+    };
+
+    const singup = async ():Promise<void> => {
+        try {
+            const result = await axios.post(`http://127.0.0.1:8000/register`, {
+                userName: username,
+                password: password
+            })
+            //setMensagens(result.data); // Atualiza o estado com os dados da resposta
+            console.log(result.data.access_token);
+
+            // esse cookie tem 7 dias de tempo de vida;
+            // Cookies.set('nomeDoCookie', 'valorDoCookie', { expires: 7 });
+            Cookies.set('BEARER_TOKEN', result.data.access_token, { expires: 7 });
+            navigate("/");
+            window.location.reload();
+        } catch (error) {
+            console.error("Error ao buscar chats:", error);
+        }
+    };
 
     const Logar = () => {
-        console.log("Logar")
+        singin();
     }
     
     const Registra = () => {
         console.log("Registrar")
+        singup();
     }
 
     return <div className={`Login ${isLogin ? '' : 'register'}`}>
